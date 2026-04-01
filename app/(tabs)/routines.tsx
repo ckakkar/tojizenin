@@ -3,15 +3,21 @@ import { View, Text, SafeAreaView, ScrollView, TouchableOpacity, Alert } from 'r
 import { database } from '../../database/index';
 import Routine from '../../database/models/Routine';
 import { useRouter } from 'expo-router';
+import { Skeleton } from '../../components/Skeleton';
 
 export default function RoutinesScreen() {
   const router = useRouter();
   const [routines, setRoutines] = useState<Routine[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRoutines = async () => {
-      const allRoutines = await database.collections.get<Routine>('routines').query().fetch();
-      setRoutines(allRoutines);
+      // Setup delay to show shimmer explicitly for premium UX 
+      setTimeout(async () => {
+        const allRoutines = await database.collections.get<Routine>('routines').query().fetch();
+        setRoutines(allRoutines);
+        setLoading(false);
+      }, 700);
     };
     fetchRoutines();
   }, []);
@@ -19,6 +25,19 @@ export default function RoutinesScreen() {
   const handleStartWorkout = (routineName: string) => {
     router.push('/run_workout');
   };
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-black">
+        <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
+          <Text className="text-3xl font-bold text-white mb-6 mt-10">Training Plans</Text>
+          <Skeleton className="w-full h-24 rounded-2xl mb-4" />
+          <Skeleton className="w-full h-24 rounded-2xl mb-4" />
+          <Skeleton className="w-full h-24 rounded-2xl mb-4" />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-black">
@@ -43,7 +62,7 @@ export default function RoutinesScreen() {
 
         {routines.length === 0 && (
           <View className="items-center justify-center p-10 bg-zinc-900 rounded-2xl mb-4 border border-zinc-800 border-dashed">
-            <Text className="text-zinc-500 font-medium">No routines found.</Text>
+            <Text className="text-zinc-500 font-medium tracking-wider">No routines found.</Text>
           </View>
         )}
 

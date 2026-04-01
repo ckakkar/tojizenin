@@ -3,15 +3,22 @@ import { View, Text, SafeAreaView, ScrollView, TextInput, TouchableOpacity, Aler
 import { useRouter } from 'expo-router';
 import { getUserProfile } from '../database/seed';
 import UserProfile from '../database/models/UserProfile';
+import { Skeleton } from '../components/Skeleton';
 
 export default function RunWorkoutScreen() {
   const router = useRouter();
   const [weight, setWeight] = useState('');
   const [reps, setReps] = useState('');
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getUserProfile().then(setProfile);
+    setTimeout(() => {
+      getUserProfile().then((res) => {
+        setProfile(res);
+        setLoading(false);
+      });
+    }, 600);
   }, []);
   
   const unit = profile?.unitPreference === 'metric' ? 'kg' : 'lbs';
@@ -25,6 +32,20 @@ export default function RunWorkoutScreen() {
     setReps('');
   };
 
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-black">
+        <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
+          <View className="mb-6 mt-10">
+             <Skeleton className="h-4 w-24 rounded-lg" />
+          </View>
+          <Skeleton className="h-10 w-48 rounded-xl mb-6" />
+          <Skeleton className="w-full h-64 rounded-3xl" />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-black">
       <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
@@ -34,7 +55,7 @@ export default function RunWorkoutScreen() {
         
         <Text className="text-4xl font-black text-white mb-6 uppercase tracking-tight">Active Session</Text>
         
-        <View className="bg-zinc-900 rounded-3xl p-6 mb-4 border border-zinc-800">
+        <View className="bg-zinc-900 rounded-3xl p-6 mb-4 border border-zinc-800 shadow-2xl">
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-2xl font-black text-amber-400 uppercase">Bench Press</Text>
             <Text className="text-zinc-500 font-bold uppercase tracking-widest text-xs">Chest</Text>

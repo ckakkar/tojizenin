@@ -3,6 +3,7 @@ import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-na
 import { SpreadGraph } from '../../components/SpreadGraph';
 import { getUserProfile } from '../../database/seed';
 import UserProfile from '../../database/models/UserProfile';
+import { Skeleton } from '../../components/Skeleton';
 
 // Mock data (Assuming DB stores raw lb data natively to normalize!)
 const MOCK_DATA = [
@@ -16,9 +17,16 @@ const MOCK_DATA = [
 export default function DashboardScreen() {
   const [viewMode, setViewMode] = useState<'1RM' | 'Volume'>('1RM');
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getUserProfile().then(setProfile);
+    // Artificial 800ms lag to demonstrate pure loading aesthetic internally
+    setTimeout(() => {
+      getUserProfile().then((res) => {
+        setProfile(res);
+        setLoading(false);
+      });
+    }, 800);
   }, []);
 
   const unit = profile?.unitPreference === 'metric' ? 'kg' : 'lbs';
@@ -26,6 +34,39 @@ export default function DashboardScreen() {
     x: d.x,
     y: unit === 'kg' ? Math.round(d.y * 0.453592) : d.y
   }));
+
+  if (loading) {
+    return (
+      <SafeAreaView className="flex-1 bg-black">
+        <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
+          <View className="px-6 pt-10 pb-6">
+            <Skeleton className="h-10 w-64 rounded-xl mb-3" />
+            <Skeleton className="h-4 w-48 rounded-md" />
+          </View>
+
+          <View className="mx-6 mb-4 pb-2">
+            <Skeleton className="h-12 w-full rounded-2xl" />
+          </View>
+          
+          <View className="mb-6">
+            <View className="mx-6 flex-row justify-between items-end mb-2 mt-4">
+              <Skeleton className="h-8 w-48 rounded-lg" />
+              <Skeleton className="h-5 w-16 rounded-full" />
+            </View>
+            <View className="p-4 mx-4 my-2 h-[280px]">
+              <Skeleton className="w-full h-full rounded-2xl" />
+            </View>
+          </View>
+          
+          <View className="px-6 mt-4">
+             <Skeleton className="h-3 w-32 rounded-md mb-5" />
+             <Skeleton className="w-full h-16 rounded-2xl mb-2" />
+             <Skeleton className="w-full h-16 rounded-2xl mb-2" />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-black">

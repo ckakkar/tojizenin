@@ -3,13 +3,20 @@ import { View, Text, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'r
 import { getUserProfile, resetDatabase } from '../../database/seed';
 import UserProfile from '../../database/models/UserProfile';
 import { useRouter } from 'expo-router';
+import { Skeleton } from '../../components/Skeleton';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getUserProfile().then(setProfile);
+    setTimeout(() => {
+      getUserProfile().then((res) => {
+        setProfile(res);
+        setLoading(false);
+      });
+    }, 600); // UI aesthetic timeout
   }, []);
 
   const handleReset = () => {
@@ -26,14 +33,25 @@ export default function SettingsScreen() {
     );
   }
 
-  if (!profile) return null;
+  if (loading || !profile) {
+    return (
+      <SafeAreaView className="flex-1 bg-black">
+        <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
+          <Text className="text-3xl font-bold text-white mb-6 mt-10">Profile</Text>
+          <Skeleton className="w-full h-56 rounded-3xl mb-8" />
+          <Text className="text-red-500 font-bold mb-4 uppercase tracking-widest text-xs mt-10">Danger Zone</Text>
+          <Skeleton className="w-full h-16 rounded-2xl" />
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-black">
       <ScrollView contentContainerStyle={{ padding: 24, paddingBottom: 100 }}>
         <Text className="text-3xl font-bold text-white mb-6 mt-10">Profile</Text>
 
-        <View className="bg-zinc-900 rounded-2xl p-6 mb-8 border border-zinc-800">
+        <View className="bg-zinc-900 rounded-3xl p-6 mb-8 border border-zinc-800 shadow-2xl">
            <Text className="text-3xl font-black text-amber-400 mb-6 uppercase tracking-wider">{profile.name}</Text>
            
            <View className="flex-row justify-between mb-4 border-b border-zinc-800 pb-4">
