@@ -1,6 +1,7 @@
 import { Database } from '@nozbe/watermelondb';
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
 import { mySchema } from './schema';
+import { migrations } from './migrations';
 import Exercise from './models/Exercise';
 import Tag from './models/Tag';
 import Routine from './models/Routine';
@@ -12,6 +13,7 @@ import UserProfile from './models/UserProfile';
 
 const adapter = new SQLiteAdapter({
   schema: mySchema,
+  migrations,
   jsi: true,
   onSetUpError: error => {
     // Database failed to load. Provide error handling here.

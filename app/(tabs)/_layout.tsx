@@ -12,35 +12,41 @@ export default function TabLayout() {
           ios: { position: 'absolute', backgroundColor: '#18181b', borderTopWidth: 0 },
           default: { backgroundColor: '#18181b', borderTopWidth: 0 },
         }),
-        tabBarActiveTintColor: '#fbbf24', // amber-400
-        tabBarInactiveTintColor: '#a1a1aa' // zinc-400
+        tabBarActiveTintColor: '#fbbf24',
+        tabBarInactiveTintColor: '#a1a1aa',
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="bar-chart" color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons size={26} name="bar-chart" color={color} />,
         }}
       />
       <Tabs.Screen
         name="routines"
         options={{
           title: 'Routines',
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="barbell" color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons size={26} name="barbell" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="builder"
+        name="insights"
         options={{
-          title: 'Builder',
-          href: null, // Hide from tab bar
+          title: 'Insights',
+          tabBarIcon: ({ color }) => <Ionicons size={26} name="bulb" color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="settings" color={color} />,
+          tabBarIcon: ({ color }) => <Ionicons size={26} name="settings" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="builder"
+        options={{
+          href: null,
         }}
       />
     </Tabs>

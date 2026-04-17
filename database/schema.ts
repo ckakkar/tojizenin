@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb'
 
 export const mySchema = appSchema({
-  version: 3,
+  version: 4,
   tables: [
     tableSchema({
       name: 'user_profiles',
@@ -10,6 +10,7 @@ export const mySchema = appSchema({
         { name: 'height', type: 'number' },
         { name: 'weight', type: 'number' },
         { name: 'unit_preference', type: 'string' }, // 'imperial' | 'metric'
+        { name: 'deepseek_api_key', type: 'string', isOptional: true },
       ]
     }),
     tableSchema({
