@@ -5,7 +5,8 @@ export default class UserProfile extends Model {
   static table = 'user_profiles';
 
   @field('name') name!: string;
-  @field('height') height!: number; // stored in cm or inches depending on preference, but let's store standard base unit (e.g. cm) and convert on UI, or just store what they put
+  @field('height') height!: number;
   @field('weight') weight!: number;
   @field('unit_preference') unitPreference!: 'imperial' | 'metric';
+  @field('deepseek_api_key') deepseekApiKey?: string;
 }

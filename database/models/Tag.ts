@@ -5,5 +5,6 @@ export default class Tag extends Model {
   static table = 'tags';
   @field('name') name!: string;
   @field('category') category!: string;
+  @field('exercise_id') exerciseId!: string;
   @relation('exercises', 'exercise_id') exercise!: any;
 }
