@@ -1,82 +1,149 @@
-# 🏋️‍♂️ Tojizenin: The Ultimate Local-First Fitness Tracker
+# Tojizenin
 
-Tojizenin is a premium, data-driven iOS fitness tracking application built heavily around offline speed and smart analytics. Designed strictly for an iPhone and Mac ecosystem, it calculates dynamic **Spread Graphs** of your progression mapping out mathematically estimated `1-Rep Max` algorithms and `Total Volume` accumulation without relying on any external cloud subscription services.
-
-> **Fast, offline, and localized directly on your device.**
+A local-first fitness tracker for iOS. Logs sets, tracks estimated 1RM and total volume over time, and works completely offline — no cloud, no subscriptions.
 
 ---
 
-## 🏗 The Tech Stack
+## Tech Stack
 
-This project was systematically ripped out of a generic Next.js template and refactored into a native-first **React Native (Expo)** powerhouse:
-
-1. **Database:** `@nozbe/watermelondb` — A massive C++ powered local SQLite database for instant, zero-latency workout logging and offline persistence.
-2. **Framework:** `Expo Router` — Handling strict Native iOS tab navigation and layout stack logic.
-3. **Styling:** `NativeWind v4` — Porting exactly pure Tailwind CSS classes directly into the React Native primitives for an AMOLED-black minimalist finish.
-4. **Analytics Pipeline:** `victory-native` & `react-native-svg` — Bringing massive, interactive data spread charts right to your Dashboard natively.
-5. **UI & UX:** Native `react-native-reanimated` powering seamless `<Skeleton />` shimmering block loading states while the database connects.
-
----
-
-## 🛠 Features & Capabilities
-
-### 1. Smart Onboarding Security Guard
-When launching the app, the routing layer automatically scans the WatermelonDB. If no **User Profile** exists, you are securely locked into an `Onboarding Flow` capturing:
-* Name.
-* Height & Weight.
-* **Imperial vs Metric** Database Tracking alignment.
-
-### 2. Auto-Seeding Configurations
-If your database is completely empty upon onboarding, the internal seeding engine dynamically constructs and injects a standard **Push/Pull/Legs** routine alongside a baseline "Barbell Bench Press" tagged asset so you can log sets instantly without manually creating records yourself.
-
-### 3. Responsive Unit Conversions
-The whole app listens to the User Profile's `unitPreference`. If you set `Metric` in onboarding, the Dashboard analytics inherently execute dynamic math converting any historically logged pounds straight into kilograms right on the visual plane. 
-
-### 4. Custom Routine Builder
-Navigating to the **Training Plans (Routines)** tab pulls directly from the active Database. You have access to a lightning-fast `builder` interface allowing you to uniquely construct custom routines and permanently store them natively, completely distinct from preset algorithms.
-
-### 5. Protected Wiping
-At the footer of the `Profile > Settings` tab sits a fully interactive **Danger Zone**. Protected by an iOS confirmation boundary, tapping it completely triggers SQLite truncation, purging the entire database and booting you back to the initial Onboarding flow. 
+| Layer | Technology |
+|---|---|
+| Framework | Expo Router (React Native, file-based navigation) |
+| Database | WatermelonDB — C++ SQLite bindings, zero-latency offline queries |
+| Styling | NativeWind v4 — Tailwind CSS for React Native |
+| Charts | victory-native + react-native-svg |
+| Animations | react-native-reanimated (skeleton loaders, transitions) |
+| Language | TypeScript |
 
 ---
 
-## 📲 Exact Step-By-Step Commands to Test it on Your iPhone 
+## Features
 
-Because Tojizenin uses deep native modules (ex. WatermelonDB’s SQLite Objective-C bindings), **it CANNOT run inside the standard `Expo Go` sandbox app**. It requires your Mac to actively compile it using Xcode SDK tools.
+- **Onboarding guard** — on first launch, routes to a setup flow; on return, loads straight into the app
+- **Push/Pull/Legs preset** — auto-seeded on first setup; 3 days, 9 exercises, ready to use immediately
+- **Custom routine builder** — create routines with named days; add any exercises you want per day
+- **Active workout session** — navigate between exercises, log weight × reps per set, see est. 1RM per set inline
+- **Dashboard** — spread graph of your estimated 1RM and total volume over time per exercise
+- **Unit preference** — imperial (lbs/in) or metric (kg/cm); set in onboarding, respected everywhere
+- **Settings** — view your profile, nuke the database and start over
 
-Follow these exact steps to push the app to your iPhone:
+---
 
-### Step 1: Pre-Flight Check 
-1. **Xcode:** Ensure you have the full Xcode application installed from the Mac App Store (you don't need to open it, you just need it on your machine so the terminal can use its code compilers).
-2. **Device Connection:** Plug your iPhone straight into your Mac via the USB cable. 
-3. **Trust:** Unlock your iPhone and tap "Trust This Computer" if a prompt drops down.
+## Getting It on iPhone 15 Pro Max
 
-### Step 2: Open Terminal inside `/tojizenin`
-First, ensure you are in the correct directory.
+> The app uses WatermelonDB's native SQLite bindings (Objective-C/C++) which cannot run inside Expo Go. It must be compiled with Xcode and sideloaded onto your device.
+
+### What you need
+
+- **Mac** running macOS 13 Ventura or later
+- **Xcode 16+** — install from the Mac App Store (it's free; ~14 GB)
+- **Apple Developer account** — the free tier works for personal device installs
+- **iPhone 15 Pro Max** plugged in via **USB-C** cable
+- **Node.js 20+** and **npm** installed (`node -v` to check)
+
+---
+
+### Step 1 — Trust your Mac on the phone
+
+Plug the iPhone in via USB-C. On the phone, unlock it and tap **Trust** when the "Trust This Computer?" prompt appears. If it doesn't appear, go to **Settings → General → Transfer or Reset iPhone → Reset → Reset Location & Privacy**, then plug in again.
+
+---
+
+### Step 2 — Register your device with your Apple Developer account
+
+Open Xcode at least once after installing it so it downloads simulators and sets up command-line tools:
+
 ```bash
-cd /Users/cyruskakkar/Projects/tojizenin
+sudo xcode-select --switch /Applications/Xcode.app
+xcodebuild -version
 ```
 
-### Step 3: Install Node Packages (If you haven't)
-Ensure all core dependencies, babel frameworks, and graphing utilities are installed.
+You should see `Xcode 16.x` printed back. If not, open Xcode from Applications and let it finish setup.
+
+---
+
+### Step 3 — Clone and install dependencies
+
 ```bash
+git clone https://github.com/ckakkar/tojizenin.git
+cd tojizenin
 npm install
 ```
 
-### Step 4: Clear & Re-Generate iOS Bindings
-Since we use WatermelonDB, we have to generate the `ios/` folder native bindings using Expo Prebuild. Running `--clean` ensures there are zero corrupt cached artifacts.
+---
+
+### Step 4 — Generate the native iOS project
+
+WatermelonDB needs a real `ios/` folder with its Objective-C bindings compiled in. `expo prebuild` generates this from scratch. The `--clean` flag wipes any previous build artifacts so nothing is stale:
+
 ```bash
 npx expo prebuild --clean
 ```
-*(If it asks you "Continue with uncommitted changes?", hit 'yes' or 'y'.)*
 
-### Step 5: Compile and Push App to iPhone
-Finally, boot up the local Expo network server and fire off Xcode's underlying compilation process to push the `.app` straight to your phone. Use the `-d` flag to select your specific plugged-in device!
+If prompted "Continue with uncommitted changes?" — type `y`.
+
+This takes about 30–60 seconds. When it finishes you'll see an `ios/` folder appear.
+
+---
+
+### Step 5 — Open the generated project in Xcode and set your signing identity
+
+```bash
+open ios/tojizenin.xcworkspace
+```
+
+In Xcode:
+
+1. Click **tojizenin** in the left sidebar (the blue project icon at the top)
+2. Select the **tojizenin** target under TARGETS
+3. Click the **Signing & Capabilities** tab
+4. Under **Team**, select your Apple ID / Developer account from the dropdown
+   - If you don't see it, click **Add an Account…** and sign in with your Apple ID
+5. Xcode will auto-generate a provisioning profile. You may see a "Fix Issue" button — click it.
+
+You only need to do steps 1–5 **once**. After this, signing is remembered.
+
+---
+
+### Step 6 — Build and run on your iPhone 15 Pro Max
+
+Go back to Terminal:
+
 ```bash
 npx expo run:ios -d
 ```
 
-> **What happens next:** 
-> 1. It will present a list in your terminal: `? Select a device/simulator`. Use your arrow keys to select your actual iPhone's name, not the simulators. 
-> 2. It will say `Building app for your iPhone...` and takes approximately 1-2 minutes the first time it runs because it compiles a ton of C++ Database logic.
-> 3. Once it hits 100%, look at your iPhone! Your custom Tojizenin Dev Client app will automatically pop open, ready to use!
+You'll see a device picker. Use your arrow keys to select your **iPhone 15 Pro Max** (it shows the device name, not "simulator"). Hit Enter.
+
+Xcode will compile the native modules (~2–3 min first time, ~30 sec after). When it finishes:
+
+1. The app installs on your iPhone automatically
+2. It opens to the Tojizenin onboarding screen
+
+If you get **"Untrusted Developer"** on the phone:  
+Go to **Settings → General → VPN & Device Management** → tap your Apple ID email → tap **Trust**.
+
+---
+
+### Step 7 — Subsequent runs (no rebuild needed)
+
+Once the app is installed, you can start the JS bundler alone for fast reloads:
+
+```bash
+npx expo start --dev-client
+```
+
+Scan the QR code with the Camera app, or tap the app icon on your phone — it connects to the bundler automatically. Code changes hot-reload without recompiling the native layer.
+
+---
+
+### Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `command not found: expo` | Run `npm install` first, then use `npx expo` |
+| Build fails with "No profiles for bundle ID" | Open Xcode → Signing & Capabilities → make sure a Team is selected |
+| App icon appears but crashes on open | Run `npx expo prebuild --clean` then rebuild |
+| "Untrusted Developer" on phone | Settings → General → VPN & Device Management → trust your Apple ID |
+| WatermelonDB JSI error at startup | Ensure `newArchEnabled: true` in `app.json` and rebuild clean |
+| Device not showing in `run:ios -d` picker | Unplug, reboot iPhone, re-plug, tap Trust |
