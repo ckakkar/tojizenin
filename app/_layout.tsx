@@ -40,6 +40,8 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="onboarding" />
+        <Stack.Screen name="run_workout" />
+        <Stack.Screen name="modal" />
       </Stack>
       <StatusBar style="light" />
     </>
