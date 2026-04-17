@@ -5,6 +5,7 @@ import Exercise from './models/Exercise';
 import Tag from './models/Tag';
 import Routine from './models/Routine';
 import RoutineDay from './models/RoutineDay';
+import RoutineDayExercise from './models/RoutineDayExercise';
 import WorkoutSession from './models/WorkoutSession';
 import SetLog from './models/SetLog';
 import UserProfile from './models/UserProfile';
@@ -26,6 +27,7 @@ export const database = new Database({
     Tag,
     Routine,
     RoutineDay,
+    RoutineDayExercise,
     WorkoutSession,
     SetLog,
   ],
